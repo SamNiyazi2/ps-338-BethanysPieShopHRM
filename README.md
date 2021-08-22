@@ -1,3 +1,3 @@
-# BethanysPieShopHR
+Starter code branch M02-02 from [Plurasight course: Designing and Building Enterprise Blazor Applications](https://www.pluralsight.com/courses/designing-building-enterprise-blazor-applications) 
 
-Code for the Blazor: Getting Started course on Pluralsight.
+Author: [Alex Wolf](https://www.pluralsight.com/authors/alex-wolf)
