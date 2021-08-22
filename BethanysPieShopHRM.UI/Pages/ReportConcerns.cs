@@ -26,7 +26,7 @@ namespace BethanysPieShopHRM.UI.Pages
                 Subject = NewConcern.Title
             };
 
-            emailSerivce.SendEmail(newEmail);
+            emailSerivce.SendEmail();
             EmailSent = true;
         }
 

@@ -4,22 +4,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// 08/21/2021 07:08 pm - SSN - [20210821-1903] - [001] - M03-03 - Demo: Imporving components using dependency injection
-
 namespace BethanysPieShopHRM.UI.Services
 {
     public class ExpenseApprovalService : IExpenseApprovalService
     {
-        private readonly IEmployeeDataService employeeDataService;
+        private readonly IEmployeeDataService _employeeService;
 
-        public ExpenseApprovalService(IEmployeeDataService employeeDataService)
+        public ExpenseApprovalService(IEmployeeDataService employeeService)
         {
-            this.employeeDataService = employeeDataService;
+            _employeeService = employeeService;
         }
+
         public async Task<ExpenseStatus> GetExpenseStatus(Expense expense)
         {
+            var employee =  await _employeeService.GetEmployeeDetails(expense.EmployeeId);
 
-            var employee = await employeeDataService.GetEmployeeDetails(expense.EmployeeId);
+            if (!employee.IsFTE)
+            {
+                switch (expense.ExpenseType)
+                {
+                    case ExpenseType.Conference:
+                        return ExpenseStatus.Denied;
+                    case ExpenseType.Hotel:
+                        return ExpenseStatus.Denied;
+                    case ExpenseType.Travel:
+                        return ExpenseStatus.Denied;
+                    case ExpenseType.Food:
+                        return ExpenseStatus.Denied;
+                }
+            }
+            else
+            {
+                if (expense.ExpenseType == ExpenseType.Food && expense.Amount > 250)
+                {
+                    return ExpenseStatus.Denied;
+                }
+
+                if (expense.Amount > 5000)
+                {
+                    return ExpenseStatus.Denied;
+                }
+            }
+
+            if (employee.JobCategory.JobCategoryName == "Sales" && expense.ExpenseType == ExpenseType.Gift)
+            {
+                return ExpenseStatus.Denied;
+            }
 
             if (employee.IsOPEX)
             {
@@ -27,42 +57,12 @@ namespace BethanysPieShopHRM.UI.Services
                 {
                     case ExpenseType.Conference:
                         return ExpenseStatus.Denied;
-
-                    case ExpenseType.Transportation:
+                    case ExpenseType.Training:
                         return ExpenseStatus.Denied;
-
-                    case ExpenseType.Hotel:
-                        return ExpenseStatus.Denied;
-
                 }
-
-                if (expense.Status != ExpenseStatus.Denied)
-                {
-                    expense.CoveredAmount = expense.Amount / 2;
-                }
-            }
-
-            if (!employee.IsFTE)
-            {
-                if (expense.ExpenseType != ExpenseType.Training)
-                {
-                    return ExpenseStatus.Denied;
-                }
-            }
-
-            if (expense.ExpenseType == ExpenseType.Food && expense.Amount > 100)
-            {
-                return ExpenseStatus.Pending;
-            }
-
-            if (expense.Amount > 5000)
-            {
-                return ExpenseStatus.Pending;
             }
 
             return ExpenseStatus.Pending;
-
-
         }
     }
 }
