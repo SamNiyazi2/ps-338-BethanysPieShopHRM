@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BethanysPieShopHRM.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace BethanysPieShopHRM.Api.Models
 {
@@ -20,7 +21,9 @@ namespace BethanysPieShopHRM.Api.Models
 
         public Employee GetEmployeeById(int employeeId)
         {
-            return _appDbContext.Employees.FirstOrDefault(c => c.EmployeeId == employeeId);
+            // 08/22/2021 07:08 am - SSN - [20210822-0652] - [002] - M03-06 - Demo: Managing dependency implementation
+            // return _appDbContext.Employees.FirstOrDefault(c => c.EmployeeId == employeeId);
+            return _appDbContext.Employees.Include(r=>r.JobCategory).FirstOrDefault(c => c.EmployeeId == employeeId);
         }
 
         public Employee AddEmployee(Employee employee)
