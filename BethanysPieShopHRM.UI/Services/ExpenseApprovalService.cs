@@ -10,9 +10,16 @@ namespace BethanysPieShopHRM.UI.Services
 {
     public class ExpenseApprovalService : IExpenseApprovalService
     {
+        private readonly IEmployeeDataService employeeDataService;
 
-        public ExpenseStatus GetExpenseStatus(Expense expense, Employee employee)
+        public ExpenseApprovalService(IEmployeeDataService employeeDataService)
         {
+            this.employeeDataService = employeeDataService;
+        }
+        public async Task<ExpenseStatus> GetExpenseStatus(Expense expense)
+        {
+
+            var employee = await employeeDataService.GetEmployeeDetails(expense.EmployeeId);
 
             if (employee.IsOPEX)
             {
