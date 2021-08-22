@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BethanysPieShopHRM.Shared;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore; 
 
 namespace BethanysPieShopHRM.Api.Models
 {
@@ -23,6 +23,8 @@ namespace BethanysPieShopHRM.Api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("ps-338");
+
             base.OnModelCreating(modelBuilder);
 
             //seed categories
