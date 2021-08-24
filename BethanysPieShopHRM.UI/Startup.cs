@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BethanysPieShopHRM.UI.Services;
 using BethanysPieShopHRM.UI.Data;
+using Blazor.FlexGrid;
+using BethanysPieShopHRM.UI.Pages;
 
 namespace BethanysPieShopHRM.UI
 {
@@ -40,6 +42,11 @@ namespace BethanysPieShopHRM.UI
             services.AddTransient<ISurveyDataService, SurveyDataService>();
             services.AddTransient<ICurrencyDataService, CurrencyDataService>();
             services.AddTransient<IExpenseApprovalService, ManagerApprovalService>();
+            services.AddProtectedBrowserStorage();
+            services.AddFlexGridServerSide(cfg =>
+            {
+                cfg.ApplyConfiguration(new ExpenseGridConfiguration());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +65,7 @@ namespace BethanysPieShopHRM.UI
 
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseFlexGrid(env.WebRootPath);
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

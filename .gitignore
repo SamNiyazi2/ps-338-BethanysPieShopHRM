@@ -134,3 +134,4 @@ src/OE_Tenant.Web.Public/wwwroot/view-resources/Views/_Bundles
 src/OE_Tenant.Web.Public/wwwroot/view-resources/**/*.min.*
 src/OE_Tenant.Web.Public/wwwroot/Common/**/*.min.*
 src/OE_Tenant.Web.Public/node_modules
+/BethanysPieShopHRM.UI/wwwroot/Blazor.FlexGrid/
