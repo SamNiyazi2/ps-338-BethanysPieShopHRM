@@ -17,7 +17,23 @@ namespace BethanysPieShopHRM.UI.Services
 
         public async Task<ExpenseStatus> GetExpenseStatus(Expense expense)
         {
-            var employee =  await _employeeService.GetEmployeeDetails(expense.EmployeeId);
+            // 08/23/2021 03:39 pm - SSN - [20210822-1222] - [025] - M04-06 - Demo: Enhancing the application's routing features
+
+            // var employee =  await _employeeService.GetEmployeeDetails(expense.EmployeeId);
+
+            var employee = default(Employee);
+
+            APIBag<Employee> result = await _employeeService.GetEmployeeDetails(expense.EmployeeId);
+            if (result.FeedbackMessages.Count == 0)
+            {
+                employee = result.ModelRecord;
+            }
+            else
+            {
+                throw new Exception($"Incomplete coding - 20210824-1404 - ExpenseApprovalService: Failed to getEmployeeDetail [{expense.EmployeeId}]");
+            }
+
+
 
             if (!employee.IsFTE)
             {

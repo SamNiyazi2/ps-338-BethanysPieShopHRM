@@ -20,14 +20,16 @@ namespace BethanysPieShopHRM.UI.Pages
         [Inject]
         public IJobCategoryDataService JobCategoryDataService { get; set; }
 
-        [Inject] 
+        [Inject]
         public NavigationManager NavigationManager { get; set; }
 
         [Inject]
         public IEmailService emailService { get; set; }
 
         [Parameter]
-        public string EmployeeId { get; set; }
+        // 08/22/2021 12:42 pm - SSN - [20210822-1222] - [006] - M04-06 - Demo: Enhancing the application's routing features
+        // public string EmployeeId { get; set; }
+        public int EmployeeId { get; set; }
 
         public InputText LastNameInputText { get; set; }
 
@@ -38,22 +40,39 @@ namespace BethanysPieShopHRM.UI.Pages
         protected string JobCategoryId = string.Empty;
 
         //used to store state of screen
-        protected string Message = string.Empty;
+        // 08/23/2021 05:36 pm - SSN - [20210822-1222] - [028] - M04-06 - Demo: Enhancing the application's routing features
+        // protected string Message = string.Empty;
+        protected MarkupString Message = new MarkupString();
+
         protected string StatusClass = string.Empty;
         protected bool Saved;
+
+
+        // 08/23/2021 05:31 pm - SSN - [20210822-1222] - [027] - M04-06 - Demo: Enhancing the application's routing features
+        protected bool Failed;
 
         public List<Country> Countries { get; set; } = new List<Country>();
         public List<JobCategory> JobCategories { get; set; } = new List<JobCategory>();
 
+
+        // 08/23/2021 12:56 pm - SSN - [20210822-1222] - [019] - M04-06 - Demo: Enhancing the application's routing features
+        public MarkupString FeedbackMessages { get; set; }
+
+
+
         protected override async Task OnInitializedAsync()
         {
             Saved = false;
+            Failed = false;
+
             Countries = (await CountryDataService.GetAllCountries()).ToList();
             JobCategories = (await JobCategoryDataService.GetAllJobCategories()).ToList();
 
-            int.TryParse(EmployeeId, out var employeeId);
+            // 08/22/2021 12:43 pm - SSN - [20210822-1222] - [007] - M04-06 - Demo: Enhancing the application's routing features
+            // int.TryParse(EmployeeId, out var employeeId);
+            int employeeId = EmployeeId;
 
-            if(EmployeeDataService.SavedEmployee != null)
+            if (EmployeeDataService.SavedEmployee != null)
             {
                 Employee = EmployeeDataService.SavedEmployee;
             }
@@ -64,7 +83,25 @@ namespace BethanysPieShopHRM.UI.Pages
             }
             else
             {
-                Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
+                // 08/22/2021 12:43 pm - SSN - [20210822-1222] - [007] - M04-06 - Demo: Enhancing the application's routing features
+                // Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
+
+                // 08/23/2021 03:35 pm - SSN - [20210822-1222] - [024] - M04-06 - Demo: Enhancing the application's routing features
+                //Employee = await EmployeeDataService.GetEmployeeDetails(EmployeeId);
+                APIBag<Employee> result = await EmployeeDataService.GetEmployeeDetails(EmployeeId);
+                if (result.FeedbackMessages.Count == 0)
+                {
+                    Employee = result.ModelRecord;
+
+                }
+                else
+                {
+                    StatusClass = "alert-danger";
+                    Message = new MarkupString(result.FeedbackMessages.GetFeedbackMessagesAsHTML());
+
+                    Failed = true;
+                }
+
             }
 
             CountryId = Employee.CountryId.ToString();
@@ -73,41 +110,82 @@ namespace BethanysPieShopHRM.UI.Pages
 
         protected async Task HandleValidSubmit()
         {
-            Employee.CountryId = int.Parse(CountryId);
-            Employee.JobCategoryId = int.Parse(JobCategoryId);
-
-            if (Employee.EmployeeId == 0) //new
+            // 08/24/2021 06:45 am - SSN - [20210822-1222] - [029] - M04-06 - Demo: Enhancing the application's routing features
+            // Add try/catch
+            try
             {
-                var addedEmployee = await EmployeeDataService.AddEmployee(Employee);
 
-                emailService.SendEmail();
+                // 08/24/2021 07:18 am - SSN - [20210822-1222] - [033] - M04-06 - Demo: Enhancing the application's routing features
+                //Employee.JobCategoryId = int.Parse(JobCategoryId);
+                //Employee.CountryId = int.Parse(CountryId);
 
-                if (addedEmployee != null)
+                int.TryParse(JobCategoryId, out int _jobCategoryId);
+                int.TryParse(CountryId, out int _countryId);
+
+                Employee.JobCategoryId = _jobCategoryId;
+                Employee.CountryId = _countryId;
+
+
+                if (Employee.EmployeeId == 0) //new
                 {
-                    StatusClass = "alert-success";
-                    Message = "New employee added successfully.";
-                    Saved = true;
+                    var addedEmployee = await EmployeeDataService.AddEmployee(Employee);
+
+                    emailService.SendEmail();
+
+                    if (addedEmployee != null)
+                    {
+                        StatusClass = "alert-success";
+                        Message = new MarkupString("New employee added successfully.");
+                        Saved = true;
+                    }
+                    else
+                    {
+                        StatusClass = "alert-danger";
+                        Message = new MarkupString("Something went wrong adding the new employee. Please try again.");
+                        Saved = false;
+                    }
                 }
                 else
                 {
-                    StatusClass = "alert-danger";
-                    Message = "Something went wrong adding the new employee. Please try again.";
-                    Saved = false;
+
+                    // 08/22/2021 02:05 pm - SSN - [20210822-1222] - [013] - M04-06 - Demo: Enhancing the application's routing features
+
+                    APIBag<Employee> result = await EmployeeDataService.UpdateEmployee(Employee);
+
+                    if (result.FeedbackMessages.Count == 0)
+                    {
+
+                        Employee = result.ModelRecord;
+
+                        StatusClass = "alert-success";
+                        Message = new MarkupString("Employee updated successfully.");
+                        Saved = true;
+
+                    }
+                    else
+                    {
+                        FeedbackMessages = new MarkupString(result.FeedbackMessages.GetFeedbackMessagesAsHTML());
+
+                        Saved = false;
+                    }
+
                 }
             }
-            else
+            catch (Exception ex)
             {
-                await EmployeeDataService.UpdateEmployee(Employee);
-                StatusClass = "alert-success";
-                Message = "Employee updated successfully.";
-                Saved = true;
+
+                StatusClass = "alert-danger";
+                FeedbackMessages = new MarkupString("Something went wrong. Please try again.");
+                Saved = false;
             }
         }
+
+
 
         protected void HandleInvalidSubmit()
         {
             StatusClass = "alert-danger";
-            Message = "There are some validation errors. Please try again.";
+            Message = new MarkupString("There are some validation errors. Please try again.");
         }
 
         protected async Task DeleteEmployee()
@@ -115,7 +193,7 @@ namespace BethanysPieShopHRM.UI.Pages
             await EmployeeDataService.DeleteEmployee(Employee.EmployeeId);
 
             StatusClass = "alert-success";
-            Message = "Deleted successfully";
+            Message = new MarkupString("Deleted successfully");
 
             Saved = true;
         }

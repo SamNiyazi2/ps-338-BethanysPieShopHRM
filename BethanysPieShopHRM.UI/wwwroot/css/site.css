@@ -313,3 +313,17 @@ a[data-toggle="collapse"] {
 #sidebar .toggle-show {
     display: block;
 }
+
+
+.validation-message{
+
+    color:red;
+    padding:0 20px 0 20px;
+
+}
+
+.active {
+    font-weight: bold;
+    background: #7386D5;
+    color: #fff;
+}
