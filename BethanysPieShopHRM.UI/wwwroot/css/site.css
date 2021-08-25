@@ -318,6 +318,7 @@ a[data-toggle="collapse"] {
 .validation-message {
     color: red;
     padding: 0 20px 0 20px;
+    font-size:1em;
 }
 
 .active {

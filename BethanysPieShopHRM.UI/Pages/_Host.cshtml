@@ -29,6 +29,9 @@
 </head>
 <body>
     <app>
+
+        @*// 08/24/2021 07:42 pm - SSN - [20210824-1930] - [002] - M04-11 - Demo: Managing application state using browser storage*@
+        @*Must be set to RenderMode.Server when using protectedBrowserStorage*@
         @(await Html.RenderComponentAsync<App>(RenderMode.Server))
     </app>
 
@@ -37,8 +40,9 @@
 
     <script src="_framework/blazor.server.js"></script>
 
-    @*// 08/24/2021 05:00 pm - SSN - [20210824-1635] - [001] - M04-09 - Enhancing our UI using NuGet*@
+    @*// 08/24/2021 07:43 pm - SSN - [20210824-1930] - [003] - M04-11 - Demo: Managing application state using browser storage*@
     <script src="_content/Microsoft.AspNetCore.ProtectedBrowserStorage/protectedBrowserStorage.js"></script>
+
 
     <script src="https://kit.fontawesome.com/273d0585ea.js" crossorigin="anonymous"></script>
     <script src="_content/ps_338_BethanysPieShopHRM.ComponentsLibrary/leaflet/leaflet.js"></script>

@@ -26,10 +26,10 @@ namespace BethanysPieShopHRM.UI
         {
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
-            
+
             services.AddScoped<HttpClient>(s =>
             {
-                var client = new HttpClient { BaseAddress = new System.Uri("https://localhost:44340/") }; 
+                var client = new HttpClient { BaseAddress = new System.Uri("https://localhost:44340/") };
                 return client;
             });
 
@@ -42,7 +42,11 @@ namespace BethanysPieShopHRM.UI
             services.AddTransient<ISurveyDataService, SurveyDataService>();
             services.AddTransient<ICurrencyDataService, CurrencyDataService>();
             services.AddTransient<IExpenseApprovalService, ManagerApprovalService>();
+
+            // 08/24/2021 07:41 pm - SSN - [20210824-1930] - [001] - M04-11 - Demo: Managing application state using browser storage
             services.AddProtectedBrowserStorage();
+
+
             services.AddFlexGridServerSide(cfg =>
             {
                 cfg.ApplyConfiguration(new ExpenseGridConfiguration());

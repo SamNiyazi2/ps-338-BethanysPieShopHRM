@@ -6,6 +6,7 @@ using BethanysPieShopHRM.UI.Services;
 using BethanysPieShopHRM.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.ProtectedBrowserStorage;
 
 namespace BethanysPieShopHRM.UI.Pages
 {
@@ -22,6 +23,10 @@ namespace BethanysPieShopHRM.UI.Pages
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+
+        // 08/24/2021 07:46 pm - SSN - [20210824-1930] - [004] - M04-11 - Demo: Managing application state using browser storage
+        [Inject]
+        public ProtectedLocalStorage LocalStorageService { get; set; }
 
         [Inject]
         public IEmailService emailService { get; set; }
@@ -72,9 +77,15 @@ namespace BethanysPieShopHRM.UI.Pages
             // int.TryParse(EmployeeId, out var employeeId);
             int employeeId = EmployeeId;
 
-            if (EmployeeDataService.SavedEmployee != null)
+            // 08/24/2021 07:47 pm - SSN - [20210824-1930] - [005] - M04-11 - Demo: Managing application state using browser storage
+            var savedEmployee = await LocalStorageService.GetAsync<Employee>("Employee");
+
+            // 08/24/2021 07:48 pm - SSN - [20210824-1930] - [006] - M04-11 - Demo: Managing application state using browser storage
+            // if (EmployeeDataService.SavedEmployee != null)
+            if (savedEmployee != null && employeeId == 0)
             {
-                Employee = EmployeeDataService.SavedEmployee;
+                // Employee = EmployeeDataService.SavedEmployee;
+                Employee = savedEmployee;
             }
             else if (employeeId == 0) //new employee is being created
             {
@@ -114,17 +125,11 @@ namespace BethanysPieShopHRM.UI.Pages
             // Add try/catch
             try
             {
-
                 // 08/24/2021 07:18 am - SSN - [20210822-1222] - [033] - M04-06 - Demo: Enhancing the application's routing features
                 //Employee.JobCategoryId = int.Parse(JobCategoryId);
                 //Employee.CountryId = int.Parse(CountryId);
 
-                int.TryParse(JobCategoryId, out int _jobCategoryId);
-                int.TryParse(CountryId, out int _countryId);
-
-                Employee.JobCategoryId = _jobCategoryId;
-                Employee.CountryId = _countryId;
-
+                PickupCustomProps();
 
                 if (Employee.EmployeeId == 0) //new
                 {
@@ -182,6 +187,17 @@ namespace BethanysPieShopHRM.UI.Pages
 
 
 
+        private void PickupCustomProps()
+        {
+            int.TryParse(JobCategoryId, out int _jobCategoryId);
+            int.TryParse(CountryId, out int _countryId);
+
+            Employee.JobCategoryId = _jobCategoryId;
+            Employee.CountryId = _countryId;
+        }
+
+
+
         protected void HandleInvalidSubmit()
         {
             StatusClass = "alert-danger";
@@ -198,9 +214,16 @@ namespace BethanysPieShopHRM.UI.Pages
             Saved = true;
         }
 
-        protected void TempSave()
+        // 08/24/2021 07:49 pm - SSN - [20210824-1930] - [007] - M04-11 - Demo: Managing application state using browser storage
+        // protected void TempSave()
+        protected async void TempSave()
         {
-            EmployeeDataService.SavedEmployee = Employee;
+            // 08/24/2021 07:49 pm - SSN - [20210824-1930] - [007] - M04-11 - Demo: Managing application state using browser storage
+            //EmployeeDataService.SavedEmployee = Employee;
+            PickupCustomProps();
+            await LocalStorageService.SetAsync("Employee", Employee);
+
+
             NavigationManager.NavigateTo("/employeeoverview");
         }
 
