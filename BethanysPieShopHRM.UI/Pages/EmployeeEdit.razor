@@ -1,10 +1,18 @@
-﻿@page "/employeeedit"
-@page "/employeeedit/{EmployeeId}"
+﻿
+
+
+
+@page "/employeeedit"
+@*// 08/22/2021 12:25 pm - SSN - [20210822-1222] - [002] - M04-06 - Demo: Enhancing the application's routing features*@
+@*@page "/employeeedit/{EmployeeId}"*@
+@page "/employeeedit/{EmployeeId:int}"
+
+
 @using BethanysPieShopHRM.Shared
 @inherits EmployeeEditBase
 
 <section class="employee-edit">
-    @if (!Saved)
+    @if (!Saved && !Failed)
     {
         <h1 class="page-title">Details for @Employee.FirstName @Employee.LastName</h1>
 
@@ -14,7 +22,7 @@
             <ValidationSummary />
             <div class="form-group row">
                 <label for="lastName" class="col-sm-3">Last name: </label>
-                <InputText id="lastName" class="form-control col-sm-8" @bind-Value="@Employee.LastName"  placeholder="Enter last name" @ref="LastNameInputText"></InputText>
+                <InputText id="lastName" class="form-control col-sm-8" @bind-Value="@Employee.LastName" placeholder="Enter last name" @ref="LastNameInputText"></InputText>
                 <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => Employee.LastName)" />
             </div>
             <div class="form-group row">
@@ -60,6 +68,7 @@
                         {
                         <option value="@country.CountryId">@country.Name</option>
                         }
+                    /**/
                 </InputSelect>
                 <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => Employee.Country)" />
             </div>
@@ -96,7 +105,9 @@
                         {
                         <option value="@jobCategory.JobCategoryId">@jobCategory.JobCategoryName</option>
                         }
+                    /**/
                 </InputSelect>
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => Employee.JobCategory)" />
             </div>
 
             <div class="form-group row">
@@ -135,6 +146,9 @@
                 <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => Employee.Comment)" />
             </div>
 
+            
+            <div class="@StatusClass">@FeedbackMessages</div>
+
             <button type="submit" class="btn btn-primary edit-btn">Save employee</button>
             <a class="btn btn-outline-primary edit-outline-btn" @onclick="@NavigateToOverview">Cancel</a>
             @if (Employee.EmployeeId > 0)
@@ -143,6 +157,10 @@
                     Delete
                 </a>
             }
+
+            <a class="btn btn-outline-secondary edit-outline-btn
+               float-right" @onclick="@TempSave">Temporary Save</a>
+
         </EditForm>
 
     }

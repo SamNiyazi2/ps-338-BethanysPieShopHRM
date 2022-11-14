@@ -13,26 +13,52 @@ namespace BethanysPieShopHRM.UI.Pages
         public IEmployeeDataService EmployeeDataService { get; set; }
 
         [Inject]
-        public IJobCategoryDataService JobCategoryDataService{ get; set; }
+        public IJobCategoryDataService JobCategoryDataService { get; set; }
 
         [Parameter]
-        public string EmployeeId { get; set; }
+        // 08/22/2021 12:22 pm - SSN - [20210822-1222] - [001] - M04-06 - Demo: Enhancing the application's routing features
+        // public string EmployeeId { get; set; }
+        public int EmployeeId { get; set; }
 
         public List<Marker> MapMarkers { get; set; } = new List<Marker>();
 
         protected string JobCategory = string.Empty;
-       
+
         public Employee Employee { get; set; } = new Employee();
+
+
+        public MarkupString FeedbackMessage { get; set; }
+        public bool ValidRecord { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
+            // Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
 
-            MapMarkers = new List<Marker>
+            // 08/23/2021 03:13 pm - SSN - [20210822-1222] - [020] - M04-06 - Demo: Enhancing the application's routing features
+            // Employee = await EmployeeDataService.GetEmployeeDetails(EmployeeId);
+
+            APIBag<Employee> result = await EmployeeDataService.GetEmployeeDetails(EmployeeId);
+
+            ValidRecord = result.ModelRecord != null;
+
+            if (result.ModelRecord == null)
+            {
+                FeedbackMessage = new MarkupString(result.FeedbackMessages.GetFeedbackMessagesAsHTML());
+            }
+            else
+            {
+
+                Employee = result.ModelRecord;
+
+                MapMarkers = new List<Marker>
             {
                 new Marker{Description = $"{Employee.FirstName} {Employee.LastName}",  ShowPopup = false, X = Employee.Longitude, Y = Employee.Latitude}
             };
-            JobCategory = (await JobCategoryDataService.GetJobCategoryById(Employee.JobCategoryId)).JobCategoryName;
+
+                JobCategory = (await JobCategoryDataService.GetJobCategoryById(Employee.JobCategoryId)).JobCategoryName;
+
+            }
+
         }
     }
 }

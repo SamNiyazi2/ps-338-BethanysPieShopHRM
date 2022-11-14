@@ -1,6 +1,7 @@
 using BethanysPieShopHRM.Api.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,19 @@ using System.Linq;
 
 namespace BethanysPieShopHRM.Api
 {
+    // 08/24/2021 12:09 pm - SSN - [20210822-1222] - [039] - M04-06 - Demo: Enhancing the application's routing features
+
+    // https://stackoverflow.com/questions/61247934/add-a-message-to-your-http-400-bad-request-in-asp-net-core-3-1
+    public class BadRequestCustom : ValidationProblemDetails
+    {
+        public BadRequestCustom(ActionContext context) : base(context.ModelState)
+        {
+            // Detail = "Add detail"
+        }
+    }
+
+
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -48,7 +62,32 @@ namespace BethanysPieShopHRM.Api
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
+
+
+
+
+
+
+            // 08/24/2021 12:09 pm - SSN - [20210822-1222] - [039] - M04-06 - Demo: Enhancing the application's routing features
+            services.AddMvc().ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var problem = new BadRequestCustom(context);
+                    return new BadRequestObjectResult(problem);
+                };
+
+            });
+
+
+
+
+
+
         }
+
+       
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

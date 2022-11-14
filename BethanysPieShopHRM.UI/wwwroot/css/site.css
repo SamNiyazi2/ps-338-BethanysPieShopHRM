@@ -313,3 +313,56 @@ a[data-toggle="collapse"] {
 #sidebar .toggle-show {
     display: block;
 }
+
+
+.validation-message {
+    color: red;
+    padding: 0 20px 0 20px;
+    font-size:1em;
+}
+
+.active {
+    font-weight: bold;
+    background: #7386D5;
+    color: #fff;
+}
+
+
+.table-cell {
+    font-size: 0.9rem;
+    text-align:left;
+}
+
+.table-row td:nth-child(1) {
+    width: 300px;
+}
+
+.table-row  td:nth-child(2) {
+    color:red!important;
+    text-align:right;
+    width:120px;
+}
+
+.table-row td:nth-child(3) {
+    color: blue!important;
+    width: 140px;
+}
+
+.table-row td:nth-child(4) {
+    color: brown!important;
+    width: 100px;
+}
+
+.table-row td:nth-child(5) {
+    color: green !important;
+    font-size: 0.8rem;
+    width: 240px;
+}
+
+
+.table-cell-head {
+    text-align: center;
+    font-size: 1rem;
+    color: inherit;
+    font-weight: bold;
+}

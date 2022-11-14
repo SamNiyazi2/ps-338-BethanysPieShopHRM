@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BethanysPieShopHRM.UI.Services;
 using BethanysPieShopHRM.UI.Data;
+using Blazor.FlexGrid;
+using BethanysPieShopHRM.UI.Pages;
 
 namespace BethanysPieShopHRM.UI
 {
@@ -24,21 +26,31 @@ namespace BethanysPieShopHRM.UI
         {
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
-            
+
             services.AddScoped<HttpClient>(s =>
             {
-                var client = new HttpClient { BaseAddress = new System.Uri("https://localhost:44340/") }; 
+                var client = new HttpClient { BaseAddress = new System.Uri("https://localhost:44340/") };
                 return client;
             });
 
-            //services.AddScoped<IEmployeeDataService, MockEmployeeDataService>();
             services.AddScoped<IEmployeeDataService, EmployeeDataService>();
-            services.AddScoped<ICountryDataService, CountryDataService>();
-            services.AddScoped<IJobCategoryDataService, JobCategoryDataService>();
-            services.AddScoped<IExpenseDataService, ExpenseDataService>();
-            services.AddScoped<ITaskDataService, TaskDataService>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<ISurveyDataService, SurveyDataService>();
+            services.AddTransient<ICountryDataService, CountryDataService>();
+            services.AddTransient<IJobCategoryDataService, JobCategoryDataService>();
+            services.AddTransient<IExpenseDataService, ExpenseDataService>();
+            services.AddTransient<ITaskDataService, TaskDataService>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ISurveyDataService, SurveyDataService>();
+            services.AddTransient<ICurrencyDataService, CurrencyDataService>();
+            services.AddTransient<IExpenseApprovalService, ManagerApprovalService>();
+
+            // 08/24/2021 07:41 pm - SSN - [20210824-1930] - [001] - M04-11 - Demo: Managing application state using browser storage
+            services.AddProtectedBrowserStorage();
+
+
+            services.AddFlexGridServerSide(cfg =>
+            {
+                cfg.ApplyConfiguration(new ExpenseGridConfiguration());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,7 +69,7 @@ namespace BethanysPieShopHRM.UI
 
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseFlexGrid(env.WebRootPath);
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

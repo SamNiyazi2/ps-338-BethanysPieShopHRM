@@ -9,9 +9,13 @@ namespace BethanysPieShopHRM.Api.Models
     public interface IEmployeeRepository
     {
         IEnumerable<Employee> GetAllEmployees();
-        Employee GetEmployeeById(int employeeId);
+
+        // 08/22/2021 01:29 pm - SSN - [20210822-1222] - [010] - M04-06 - Demo: Enhancing the application's routing features
+        //Employee GetEmployeeById(int employeeId);
+        Employee GetEmployeeById(int employeeId, bool noTracking = true);
+        
         Employee AddEmployee(Employee employee);
-        Employee UpdateEmployee(Employee employee);
+        Employee UpdateEmployee(Employee employee);     
         void DeleteEmployee(int employeeId);
     }
 }

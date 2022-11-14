@@ -12,6 +12,8 @@ namespace BethanysPieShopHRM.UI.Services
         private List<Country> _countries;
         private List<JobCategory> _jobCategories;
 
+        public Employee SavedEmployee { get; set; }
+
         private IEnumerable<Employee> Employees
         {
             get
@@ -94,7 +96,7 @@ namespace BethanysPieShopHRM.UI.Services
                     Smoker = false,
                     Street = "Grote Markt 1",
                     Zip = "1000",
-                    JobCategoryId = 1, 
+                    JobCategoryId = 1,
                     Comment = "Lorem Ipsum",
                     ExitDate = null,
                     JoinedDate = new DateTime(2015, 3, 1)
@@ -118,9 +120,17 @@ namespace BethanysPieShopHRM.UI.Services
             return await Task.Run(() => JobCategories);
         }
 
-        public async Task<Employee> GetEmployeeDetails(int employeeId)
+
+        // 08/23/2021 03:30 pm - SSN - [20210822-1222] - [023] - M04-06 - Demo: Enhancing the application's routing features
+
+        //public async Task<Employee> GetEmployeeDetails(int employeeId)
+        public async Task<APIBag<Employee>> GetEmployeeDetails(int employeeId)
         {
-            return await Task.Run(() => { return Employees.FirstOrDefault(e => e.EmployeeId == employeeId); });
+            // return await Task.Run(() => { return Employees.FirstOrDefault(e => e.EmployeeId == employeeId); });
+            APIBag<Employee> result = new APIBag<Employee>();
+            result.FeedbackMessages.Add_2("Incomplete coding 20210823-1531", true);
+            return result;
+
         }
 
         public Task<Employee> AddEmployee(Employee employee)
@@ -133,7 +143,10 @@ namespace BethanysPieShopHRM.UI.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateEmployee(Employee employee)
+
+        // 08/23/2021 07:49 am - SSN - [20210822-1222] - [018] - M04-06 - Demo: Enhancing the application's routing features
+        // public Task UpdateEmployee(Employee employee)
+        public Task<APIBag<Employee>> UpdateEmployee(Employee employee)
         {
             throw new NotImplementedException();
         }
